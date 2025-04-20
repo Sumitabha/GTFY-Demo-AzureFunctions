@@ -33,4 +33,4 @@ def getAssignmentsList(req: func.HttpRequest) -> func.HttpResponse:
 
     except Exception as e:
         logging.error(f"Error: {str(e)}")
-        return func.HttpResponse("Internal Server Error", status_code=500)
+        return func.HttpResponse(f"Error: {str(e)}", status_code=500)
