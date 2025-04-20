@@ -13,14 +13,21 @@ def getAssignmentsList(req: func.HttpRequest) -> func.HttpResponse:
     try:
         server = os.getenv('DB_SERVER')  # e.g., yourserver.database.windows.net
         database = os.getenv('DB_NAME')
-        driver = '{ODBC Driver 17 for SQL Server}'
+        driver = '{ODBC Driver 18 for SQL Server}'
 
         # Get access token from Managed Identity
         credential = DefaultAzureCredential()
         token = credential.get_token("https://database.windows.net/.default")
         access_token = token.token.encode('utf-16-le')
 
-        conn_str = f'DRIVER={driver};SERVER={server};DATABASE={database};Authentication=ActiveDirectoryAccessToken'
+        conn_str = (
+            f'DRIVER={driver};'
+            f'SERVER={server};'
+            f'DATABASE={database};'
+            f'Encrypt=yes;'
+            f'TrustServerCertificate=yes;'
+            f'Authentication=ActiveDirectoryAccessToken'
+        )
         conn = pyodbc.connect(conn_str, attrs_before={1256: access_token})
 
         cursor = conn.cursor()
